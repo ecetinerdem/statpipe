@@ -2,7 +2,7 @@ const std = @import("std");
 const flags = @import("flags.zig");
 
 pub fn runPython(io: std.Io, allocator: std.mem.Allocator, args: flags.Args) !u8 {
-    const python_path = "python3";
+    const python_path = "../analyzer/.venv/bin/python3";
     const python_script = "../analyzer/main.py";
 
     var argv: std.ArrayList([]const u8) = .empty;
