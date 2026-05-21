@@ -7,8 +7,11 @@ pub fn main(init: std.process.Init) !void {
     // Create the allocator here and clean everything here
     const allocator = init.gpa;
 
+    // Initialize io
+    const io = init.io;
     const args: flags.Args = try flags.parse_flags(allocator, init.minimal.args);
 
+    std.debug.print("\n=== Parsed Arguments ===\n\n", .{});
     inline for (std.meta.fields(@TypeOf(args))) |field| {
         const value = @field(args, field.name);
         if (@TypeOf(value) == []const u8) {
@@ -18,7 +21,7 @@ pub fn main(init: std.process.Init) !void {
         }
     }
 
-    const result: u8 = analyzer.runPython(allocator, args);
+    const exit_code: u8 = try analyzer.runPython(io, allocator, args);
 
-    std.debug.print("Result of Python script: {d}", .{result});
+    std.debug.print("Result of Python script: {d}", .{exit_code});
 }

@@ -29,11 +29,11 @@ pub fn parse_flags(allocator: std.mem.Allocator, arg_iter: std.process.Args) !Ar
     // Target column
     var target: ?[]const u8 = null;
 
-    // if no model provided use linear regression
+    // If no model provided use linear regression
     // No other model unless ı know what ı am doing
     var model: ?[]const u8 = "linear_regression";
 
-    // if data is clean no cleaning needed just tell python to train and give the results
+    // If data is clean no cleaning needed just tell python to train and give the results
     var is_clean: bool = false;
 
     // Json output if visualize true then Go backend read this file to struct and serve. if not then zig will print this json to terminal
@@ -42,7 +42,7 @@ pub fn parse_flags(allocator: std.mem.Allocator, arg_iter: std.process.Args) !Ar
     // Are we giving more information or not
     var is_verbose: bool = false;
 
-    // are we serving and visualizing  resulted data with Go backend react front end or not?
+    // Are we serving and visualizing  resulted data with Go backend react front end or not?
     var visualize: bool = false;
 
     // Which port are we serving. if not specified use 8080 or we may ned to change if our backend uses. we may need different port. Not sure yet
@@ -54,8 +54,6 @@ pub fn parse_flags(allocator: std.mem.Allocator, arg_iter: std.process.Args) !Ar
     while (i < args.len) : (i += 1) {
         const arg = args[i];
 
-        // BUG: you were checking 'if (i < args.len)' AFTER already reading args[i].
-        // the i < args.len check must happen BEFORE doing i += 1 and reading args[i+1].
         if (std.mem.eql(u8, arg, "--name")) {
             i += 1;
             if (i < args.len) name = args[i];
@@ -76,9 +74,6 @@ pub fn parse_flags(allocator: std.mem.Allocator, arg_iter: std.process.Args) !Ar
             if (i < args.len) output_file = args[i];
         } else if (std.mem.eql(u8, arg, "--clean")) {
             is_clean = true;
-            // BUG: --clean and --verbose etc are toggle flags, no value follows them.
-            // you were doing i += 1 which skips the next flag entirely.
-
         } else if (std.mem.eql(u8, arg, "--no-clean")) {
             is_clean = false;
         } else if (std.mem.eql(u8, arg, "--verbose")) {
@@ -93,13 +88,8 @@ pub fn parse_flags(allocator: std.mem.Allocator, arg_iter: std.process.Args) !Ar
             i += 1;
             if (i < args.len) port = args[i];
         }
-
-        // BUG: you had 'return' inside the while loop which exits on the first iteration.
-        // all the orelse checks and the return must be OUTSIDE the loop.
     }
 
-    // Validate required flags AFTER the loop is fully done.
-    // orelse with a block lets us print help and exit cleanly if missing.
     const resolved_name = name orelse {
         std.debug.print("Error: --name is required.\n\n", .{});
         print_help();

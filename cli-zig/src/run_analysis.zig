@@ -1,70 +1,49 @@
 const std = @import("std");
 const flags = @import("flags.zig");
 
-pub fn runPython(allocator: std.mem.Allocator, args: flags.Args) u8 {
+pub fn runPython(io: std.Io, allocator: std.mem.Allocator, args: flags.Args) !u8 {
     const python_path = "python3";
-    const python_script = "../analyzer/";
+    const python_script = "../analyzer/main.py";
 
-    var child = std.process.Child([]const u8).init(&.{
-        python_path,
-        python_script,
-    }, allocator);
+    var argv: std.ArrayList([]const u8) = .empty;
+    defer argv.deinit(allocator);
 
-    var argv = std.ArrayList([]const u8).init(allocator);
-    defer argv.deinit();
+    try argv.append(allocator, python_path);
+    try argv.append(allocator, python_script);
 
-    try argv.appendSlice(&.{
-        python_path,
-        "--name",
-        args.name,
-        "--path",
-        python_script,
-        "--columns",
-        args.columns,
-        "--target",
-        args.target,
-        "--model",
-        args.model,
-        "--output",
-        args.output,
-        "--port",
-        args.port,
+    try argv.appendSlice(allocator, &.{
+        "--name",    args.name,
+        "--path",    args.path,
+        "--columns", args.columns,
+        "--target",  args.target,
+        "--model",   args.model,
+        "--output",  args.output,
+        "--port",    args.port,
     });
 
-    if (args.clean) {
-        try argv.append("--clean");
-    }
+    if (args.clean) try argv.append(allocator, "--clean");
+    if (args.verbose) try argv.append(allocator, "--verbose");
+    if (args.visualize) try argv.append(allocator, "--visualize");
 
-    if (args.verbose) {
-        try argv.append("--verbose");
-    }
-
-    if (args.visualize) {
-        try argv.append("--visualize");
-    }
-
-    child.argv = argv.items;
-
-    child.stdout_behaviour = .Inherit;
-    child.stderr_behaviour = .Inherit;
+    var child = try std.process.spawn(io, .{
+        .argv = argv.items,
+    });
 
     std.debug.print("Running Python script: {s} {s}...\n", .{ python_path, python_script });
 
-    try child.spawn();
+    const exit_code = try child.wait(io);
 
-    const result = try child.wait();
-
-    return switch (result) {
-        .Exited => |code| code,
-        .Signal => |sig| {
+    return switch (exit_code) {
+        .exited => |code| code,
+        .signal => |sig| {
             std.debug.print("Python was killed by signal {}\n", .{sig});
             return 1;
         },
-        .Stopped => |sig| {
+        .stopped => |sig| {
             std.debug.print("Python was stopped by signal {}\n", .{sig});
             return 1;
         },
-        .Unknown => |code| {
+        .unknown => |code| {
             std.debug.print("Python exited with unknown status {}\n", .{code});
             return 1;
         },
