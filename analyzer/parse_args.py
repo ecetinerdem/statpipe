@@ -1,14 +1,5 @@
-import sys
 import argparse
-import os
-import logging
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import r2_score, mean_squared_error
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+
 
 
 CONFIG = {
@@ -26,15 +17,6 @@ CONFIG = {
     "output_image": "life_satisfaction.png",
     "line_width": 2
 }
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(levelname)s -%(message)s"
-)
-
-logger = logging.getLogger(__name__)
-
-
 
 def parse_arguments():
     parser = argparse.ArgumentParser(description='Linear Regression analysis on given  data')

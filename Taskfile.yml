@@ -10,13 +10,13 @@ tasks:
     desc: Run Zig cli orchestration
     dir: ./cli-zig
     cmds:
-      - zig build run -- --name lifesat --path lifesat --columns col1,col2,col3 --target lifesat
+      - zig build run -- --name lifesat --path ../data/lifesat.csv --columns lifesat,age,gender,income,social_trust,discrimination_index,work_stress,religiosity,social_activity,economic_satisfaction,wellbeing --target lifesat
 
   analyzer:
     desc: Run Python analysis and ML model
     dir: ./analyzer
     cmds:
-      - python3 main.py --name lifesat --path lifesat --columns col1,col2,col3 --target lifesat
+      - python3 main.py --name lifesat --path lifesat.csv --columns col1,col2,col3 --target lifesat
 
   backend:
     desc: Run GO backend
