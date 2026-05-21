@@ -1,0 +1,10 @@
+# Zig
+.zig-cache/
+zig-out/
+
+# Python venv
+analyzer/.venv/
+
+# Python cache
+__pycache__/
+*.pyc
