@@ -1,0 +1,29 @@
+# yaml-language-server: $schema=https://taskfile.dev/schema.json
+
+version: "3"
+
+vars:
+  GREETING: Hello, world!
+
+tasks:
+  cli-zig:
+    desc: Run Zig cli orchestration
+    dir: ./cli-zig
+    cmds:
+      - zig build run -- --name lifesat --path lifesat --columns col1,col2,col3 --target lifesat
+
+  analyzer:
+    desc: Run Python analysis and ML model
+    dir: ./analyzer
+    cmds:
+      - python3 main.py --name lifesat --path lifesat --columns col1,col2,col3 --target lifesat
+
+  backend:
+    desc: Run GO backend
+    cmds:
+      - go run main.go
+
+  frontend:
+    desc: Run JS frontend
+    cmds:
+      - npm run dev

@@ -1,12 +1,8 @@
-
-
+from parse_args import parse_arguments
 def main ():
-    # parse_flags()
-    print("works")
-
-
-
-#def parse_flags():
+    args = parse_arguments()
+    for k, v in vars(args).items():
+        print(f"{k} = {v}")
 
 
 
