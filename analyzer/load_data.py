@@ -15,8 +15,7 @@ def load_data(filepath, columns , logger):
         logger.error(f"File does not exist: {filepath}")
         sys.exit(1)
 
-    # Turn columns string into an array and shadow the variable so underlying type changes from str to arr
-    columns = columns.split(",")
+   
 
     # Read the file to pd
     try:
