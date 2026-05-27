@@ -14,11 +14,11 @@ class ModelData:
     y_test: np.ndarray
 
 
-def prepare_model_data(preprocessed_data,columns, target, logger):
+def prepare_model_data(df,columns, target, logger):
     
     # Get X and y
-    X = preprocessed_data[columns].values
-    y = preprocessed_data[target].values
+    X = df[columns].values
+    y = df[target].values
 
     # Split the data Train and Test
     X_train, X_test, y_train, y_test = train_test_split(

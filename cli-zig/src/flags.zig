@@ -37,7 +37,7 @@ pub fn parse_flags(allocator: std.mem.Allocator, arg_iter: std.process.Args) !Ar
     var is_clean: bool = false;
 
     // Json output if visualize true then Go backend read this file to struct and serve. if not then zig will print this json to terminal
-    var output_file: ?[]const u8 = "result.json";
+    var output_file: ?[]const u8 = "../result/result.json";
 
     // Are we giving more information or not
     var is_verbose: bool = false;
@@ -93,7 +93,7 @@ pub fn parse_flags(allocator: std.mem.Allocator, arg_iter: std.process.Args) !Ar
     const resolved_name = name orelse {
         std.debug.print("Error: --name is required.\n\n", .{});
         print_help();
-        return error.MissingFlag; // we must return an error, not .{} — .{} is not an Args
+        return error.MissingFlag;
     };
 
     const resolved_path = path_to_csv orelse {
@@ -121,7 +121,7 @@ pub fn parse_flags(allocator: std.mem.Allocator, arg_iter: std.process.Args) !Ar
         .target = resolved_target,
         .model = model orelse "linear_regression",
         .clean = is_clean,
-        .output = output_file orelse "result.json",
+        .output = output_file orelse "../result/result.json",
         .verbose = is_verbose,
         .visualize = visualize,
         .port = port orelse "8080",

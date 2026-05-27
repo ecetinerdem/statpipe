@@ -1,10 +1,15 @@
+import sys
 import logging
 import pandas as pd
+
 
 from parse_args import parse_arguments
 from load_data import load_data
 from preprocess import preprocess_data
 from prepare_model_data import prepare_model_data
+from model import train_model, evaluate_model, get_model_formula
+from print_results import print_results
+from model_to_json import save_model_to_json
 
 
 
@@ -18,31 +23,34 @@ logger = logging.getLogger(__name__)
 def main ():
     args = parse_arguments()
 
-     # Turn columns string into an array underlying type changes from str to arr
-    columns = args.columns.split(",")
-    columns.append(args.target)
-
-
-    # Remove for loop later
-    for k, v in vars(args).items():
-        print(f"{k} = {v}")
+    # Get feature columns and target column
+    feature_columns = args.columns.split(",")
+    target_column = args.target
+    output_json = args.output
     
-    df = load_data(args.path, columns, logger)
-    # Remove print later
-    # print(df.head(5))
+    
+    # Load the data
+    df = load_data(args.path, feature_columns + [target_column], logger)
+    
     
     # If dataframe not clean preprocess it
     if not args.clean:
-        processed_df = preprocess_data(df, columns, logger)
-    else:
-        processed_df = df
+        df = preprocess_data(df, feature_columns + [target_column], logger)
 
-    # print(processed_df.head(5))
+    # Prepare data for training
+    model_data = prepare_model_data(df, feature_columns, target_column, logger)
 
-    modelData = prepare_model_data(processed_df, args.columns.split(","), args.target, logger)
-    print(modelData.y_test)
+    # Train the model
+    model, scaler = train_model(model_data)
 
+    # Evaluate results of the model
+    model_results = evaluate_model(model_data, model, scaler, logger)
+    
+    # Print results to terminal
+    print_results(model_data, model_results)
 
-
+    # Write to json output
+    save_model_to_json(model_results, model_data, feature_columns, target_column, output_json, logger)
+    return 0
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

@@ -25,8 +25,16 @@ pub fn main(init: std.process.Init) !void {
     }
 
     // Execute Python code to for our ML model
-    const exit_code: u8 = try analyzer.runPython(io, allocator, args);
+    const analyzer_exit_code: u8 = try analyzer.runPython(io, allocator, args);
 
     // Print the message so we now exit code
-    std.debug.print("Result of Python script: {d}", .{exit_code});
+    std.debug.print("Result of Python script: {d}\n", .{analyzer_exit_codee});
+
+    // if exit code 0 then execute Go code for backend launch! (It will serve a backend server so how we will send back a 0 value)
+    const backend_exit_code: u8 = try
+    if (analyzer_exit_codee == 0) {} else {
+        std.debug.print("Non-zero(0) exit code: {d}\n", .{analyzer_exit_codee});
+        std.debug.print("Terminating pipeline\n", .{});
+        std.process.exit(1);
+    }
 }

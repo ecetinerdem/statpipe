@@ -12,7 +12,7 @@ def preprocess_data(dataframe, columns, logger):
         processed_df[column] = pd.to_numeric(processed_df[column], errors="coerce")
 
     # Handle missing data
-    if preprocess_data[[columns]].isna().any().any():
+    if processed_df[columns].isna().any().any():
         logger.warning("Missing values found, dropping rows with missing values")
         processed_df = processed_df.dropna(subset=columns)
 
