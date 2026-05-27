@@ -3,6 +3,7 @@ CONFIG = {
     "default_model": "linear_regression",
     "default_csv": "../data/lifesat.csv",
     "output_json": "../result/output.json",
+    "metadata_path" :  "../result/metadata.json",
     "default_port": "8080",
     "test_size": 0.2,
     "random_state": 42, # Answer to life, universe and everything :)
