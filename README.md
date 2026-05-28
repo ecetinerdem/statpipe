@@ -2,6 +2,8 @@
 
 A data analysis pipeline that orchestrates Python ML training, a Go backend, and a React frontend — all launched from a single Zig CLI.
 
+https://www.loom.com/share/fc3c04cf9c3242789ddf3fec9c03474d
+
 ## What it does
 
 You run one command. Zig parses your flags, trains a linear regression model on your CSV data using Python, serves the results via a Go REST API, and launches a React frontend to visualize everything in the browser.
