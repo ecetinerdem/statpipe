@@ -1,7 +1,7 @@
 const std = @import("std");
 const flags = @import("flags.zig");
 
-pub fn runBackendServer(io: std.Io, allocator: std.mem.Allocator, args: flags.Args) !u8 {
+pub fn runBackendServer(io: std.Io, allocator: std.mem.Allocator, args: flags.Args) !std.process.Child {
     const go_path = ".";
 
     var argv: std.ArrayList([]const u8) = .empty;
@@ -25,7 +25,7 @@ pub fn runBackendServer(io: std.Io, allocator: std.mem.Allocator, args: flags.Ar
     if (args.verbose) try argv.append(allocator, "--verbose");
     if (args.visualize) try argv.append(allocator, "--visualize");
 
-    var child = try std.process.spawn(io, .{
+    const child = try std.process.spawn(io, .{
         .argv = argv.items,
         .stdout = .inherit,
         .stderr = .inherit,
@@ -34,6 +34,6 @@ pub fn runBackendServer(io: std.Io, allocator: std.mem.Allocator, args: flags.Ar
 
     std.debug.print("Running Go backend: {s}...\n", .{go_path});
 
-    _ = try child.wait(io);
-    return 0;
+    // _ = try child.wait(io);
+    return child;
 }

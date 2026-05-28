@@ -2,6 +2,7 @@ const std = @import("std");
 const flags = @import("flags.zig");
 const analyzer = @import("run_analysis.zig");
 const backend = @import("run_backend.zig");
+const frontend = @import("run_frontend.zig");
 
 pub fn main(init: std.process.Init) !void {
 
@@ -32,14 +33,21 @@ pub fn main(init: std.process.Init) !void {
     std.debug.print("Result of Python script: {d}\n", .{analyzer_exit_code});
 
     // if exit code 0 then execute Go code for backend launch! (It will serve a backend server so how we will send back a 0 value)
-    var backend_exit_code: ?u8 = null;
+    //var backend_exit_code: ?u8 = null;
     if (analyzer_exit_code == 0) {
-        backend_exit_code = try backend.runBackendServer(io, allocator, args);
+        var backend_child = try backend.runBackendServer(io, allocator, args);
+        var frontend_child = try frontend.runFrontend(io, allocator);
+
+        std.debug.print("All services running. Press Ctrl+C to stop.\n", .{});
+
+        // wait on both — program stays alive until both exit
+        _ = try backend_child.wait(io);
+        _ = try frontend_child.wait(io);
     } else {
         std.debug.print("Non-zero(0) exit code: {d}\n", .{analyzer_exit_code});
         std.debug.print("Terminating pipeline\n", .{});
         std.process.exit(1);
     }
     // Print the message so we now exit code
-    std.debug.print("Result of Go backend: {?}\n", .{backend_exit_code});
+    std.debug.print("All services done.\n", .{});
 }
