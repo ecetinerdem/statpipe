@@ -2,9 +2,6 @@
 
 version: "3"
 
-vars:
-  GREETING: Hello, world!
-
 tasks:
   cli-zig:
     desc: Run Zig cli orchestration

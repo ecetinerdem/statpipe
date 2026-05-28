@@ -32,8 +32,6 @@ pub fn main(init: std.process.Init) !void {
     // Print the message so we now exit code
     std.debug.print("Result of Python script: {d}\n", .{analyzer_exit_code});
 
-    // if exit code 0 then execute Go code for backend launch! (It will serve a backend server so how we will send back a 0 value)
-    //var backend_exit_code: ?u8 = null;
     if (analyzer_exit_code == 0) {
         var backend_child = try backend.runBackendServer(io, allocator, args);
         var frontend_child = try frontend.runFrontend(io, allocator);
@@ -48,6 +46,6 @@ pub fn main(init: std.process.Init) !void {
         std.debug.print("Terminating pipeline\n", .{});
         std.process.exit(1);
     }
-    // Print the message so we now exit code
+    // Print the message so we know services are up
     std.debug.print("All services done.\n", .{});
 }
