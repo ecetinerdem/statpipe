@@ -2,7 +2,7 @@ const std = @import("std");
 const flags = @import("flags.zig");
 
 pub fn runBackendServer(io: std.Io, allocator: std.mem.Allocator, args: flags.Args) !u8 {
-    const go_path = "main.go";
+    const go_path = ".";
 
     var argv: std.ArrayList([]const u8) = .empty;
     defer argv.deinit(allocator);
@@ -34,17 +34,6 @@ pub fn runBackendServer(io: std.Io, allocator: std.mem.Allocator, args: flags.Ar
 
     std.debug.print("Running Go backend: {s}...\n", .{go_path});
 
-    // var buf: [256]u8 = undefined;
-    // var file_reader = child.stdout.?.reader(io, &buf);
-
-    // while (try file_reader.interface.takeDelimiter('\n')) |line| {
-    //     std.debug.print("[backend] {s}\n", .{line});
-
-    //     if (std.mem.indexOf(u8, line, "Server running on:") != null) {
-    //         std.debug.print("Backend is ready!\n", .{});
-    //         break;
-    //     }
-    // }
     _ = try child.wait(io);
     return 0;
 }
